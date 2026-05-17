@@ -3,6 +3,7 @@ import { Inter, Geist } from 'next/font/google'
 import './globals.css'
 import { cn } from '@/lib/utils'
 import { Toaster } from '@/components/ui/sonner'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -22,11 +23,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const googleClientId: string = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!
+
   return (
     <html lang='en' className={cn(inter.variable, 'font-sans', geist.variable)}>
       <body className='min-h-full flex flex-col'>
-        <Toaster richColors closeButton position='bottom-right' />
-        <main>{children}</main>
+        <GoogleOAuthProvider clientId={googleClientId}>
+          <Toaster richColors closeButton position='bottom-right' />
+          <main>{children}</main>
+        </GoogleOAuthProvider>
       </body>
     </html>
   )

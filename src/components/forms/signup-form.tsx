@@ -26,6 +26,9 @@ import {
   RegisterRequestSchema,
 } from '@/validations/auth.schema'
 import { useAuthStore } from '@/store/useAuthStore'
+import { ROUTES } from '@/constants/routes.constant'
+import { GoogleAuthButton } from '../shared/google-auth-button'
+import { Spinner } from '../ui/spinner'
 
 export function SignupForm({
   className,
@@ -64,9 +67,9 @@ export function SignupForm({
         const userType = storeLogin(res.data)
 
         if (userType === 'Admin') {
-          router.push('/admin/dashboard')
+          router.push(ROUTES.ADMIN.DASHBOARD)
         } else {
-          router.push('/')
+          router.push(ROUTES.HOME)
         }
       }, 0)
     } catch (error) {
@@ -190,27 +193,28 @@ export function SignupForm({
               </Field>
               <Field>
                 <Button type='submit' className='w-full' disabled={isLoading}>
-                  {isLoading ? 'Creating Account...' : 'Create Account'}
+                  {isLoading ? (
+                    <div className='flex items-center'>
+                      <Spinner />
+                      <span className='ml-2'>Creating Account...</span>
+                    </div>
+                  ) : (
+                    'Create Account'
+                  )}
                 </Button>
               </Field>
               <FieldSeparator className='*:data-[slot=field-separator-content]:bg-card'>
                 Or continue with
               </FieldSeparator>
               <Field className='flex justify-center'>
-                <Button variant='outline' type='button'>
-                  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>
-                    <path
-                      d='M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z'
-                      fill='currentColor'
-                    />
-                  </svg>
-                  <span className='ml-2'>Sign up with Google</span>
-                </Button>
+                <Field className='flex justify-center'>
+                  <GoogleAuthButton text='Sign up with Google' />
+                </Field>
               </Field>
               <FieldDescription className='text-center'>
                 Already have an account?{' '}
                 <Link
-                  href='/login'
+                  href={ROUTES.AUTH.LOGIN}
                   className='underline underline-offset-2 hover:text-primary'
                 >
                   Sign in

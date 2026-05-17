@@ -41,4 +41,25 @@ export const authService = {
       throw error
     }
   },
+
+  externalLogin: async (provider: string, accesstoken: string) => {
+    try {
+      const response = await apiClient.post(`/Auth/external-login/`, {
+        provider,
+        accesstoken,
+      })
+      if (!response || !response.data) {
+        throw new Error('NoResponseData')
+      }
+
+      const validated = LoginResponseSchema.parse(response.data)
+
+      if (validated.success) {
+        toast.success(validated.message || 'Login successful')
+      }
+      return validated.data
+    } catch (error) {
+      throw error
+    }
+  },
 }
