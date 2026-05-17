@@ -1,45 +1,60 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { ROUTES } from '@/constants/routes.constant'
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname } = request.nextUrl
 
-  const AUTH_PAGES = ['/login', '/register'];
-  const PUBLIC_PAGES = ['/', '/products', '/blog', '/contact'];
+  const PUBLIC_ROUTES: string[] = [ROUTES.HOME, ROUTES.PUBLIC.PRODUCTS] // Routes that can be accessed without authentication, including public pages and auth pages (login/signup)
 
+  const GUEST_ROUTES: string[] = [ROUTES.AUTH.LOGIN, ROUTES.AUTH.SIGNUP] // Routes that should only be accessed by unauthenticated users (e.g., login, signup)
 
-  const token = request.cookies.get('auth_token')?.value;
-  const userRole = request.cookies.get('user_role')?.value; // 'Admin', 'Customer', or undefined
+  const AUTH_ROUTES: string[] = [] // Routes that need to sign in to access, but no role requirement
 
-  const isAdminRoute = pathname.startsWith('/admin');
-  const isAuthPage = AUTH_PAGES.includes(pathname);
-  const isPublicPage = PUBLIC_PAGES.some(page => pathname.startsWith(`${page}/`) || pathname === page);
+  const token = request.cookies.get('auth_token')?.value
+  const userRole = request.cookies.get('user_role')?.value // 'Admin', 'Customer', or undefined
+  const isAuthenticated = !!token
 
-  // Case 1: Try to access admin page without token or non-admin role
+  const isPublicRoute = PUBLIC_ROUTES.some(
+    route => pathname === route || pathname.startsWith(`${route}/`),
+  )
+  const isGuestRoute = (GUEST_ROUTES as string[]).includes(pathname)
+  const isAuthRoute = (AUTH_ROUTES as string[]).includes(pathname)
+  const isAdminRoute = pathname.startsWith(ROUTES.ADMIN.DASHBOARD)
+
+  //----------- CASE 1: ADMIN ROUTES -----------
+  // If user tries to access admin routes, check if they are authenticated and have the 'Admin' role. If not, redirect them to the login page
   if (isAdminRoute) {
-    if (!token || userRole !== 'Admin') {
-      return NextResponse.redirect(new URL('/login', request.url));
+    if (!isAuthenticated || userRole !== 'Admin') {
+      return NextResponse.redirect(new URL(ROUTES.AUTH.LOGIN, request.url))
     }
-    return NextResponse.next();
+    return NextResponse.next()
   }
 
-  // Case 2: Try to access login/register page while already authenticated
-  if (isAuthPage && token) {
-    if (userRole === 'Admin') {
-      return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+  //----------- CASE 2: AUTHENTICATED USERS -----------
+  // If user is authenticated but tries to access guest routes (login/signup), redirect them to the appropriate page based on their role
+  if (isAuthenticated) {
+    if (isGuestRoute) {
+      const redirectUrl =
+        userRole === 'Admin' ? ROUTES.ADMIN.DASHBOARD : ROUTES.HOME
+      return NextResponse.redirect(new URL(redirectUrl, request.url))
     }
-    return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.next()
   }
 
-  if (!isPublicPage && !isAuthPage && !token) {
-    return NextResponse.redirect(new URL('/login', request.url));
+  // ---------- CASE 3: UNAUTHENTICATED USERS -----------
+  // If user is not authenticated and tries to access protected routes (auth routes or admin routes), redirect them to login page
+  if (!isAuthenticated) {
+    if (isAuthRoute || (!isPublicRoute && !isGuestRoute)) {
+      return NextResponse.redirect(new URL(ROUTES.AUTH.LOGIN, request.url))
+    }
   }
 
-  return NextResponse.next();
+  return NextResponse.next()
 }
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|\\.[\\w]+$).*)',
-  ]
-};
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.[\\w]+$).*)',
+  ],
+}
