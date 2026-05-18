@@ -1,8 +1,26 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { ROUTES } from '@/constants/routes.constant'
+import { jwtVerify } from 'jose'
 
-export function middleware(request: NextRequest) {
+async function verifyGoogleOrBackendToken(token: string) {
+  try {
+    // Verify the token using the secret key (for backend tokens) or Google's public keys (for Google tokens)
+    const secretKey = new TextEncoder().encode(
+      process.env.NEXT_PUBLIC_JWT_SECRET_KEY,
+    )
+    const { payload } = await jwtVerify(token, secretKey, {
+      algorithms: ['HS256'],
+    })
+
+    return payload
+  } catch (error) {
+    console.error('Token verification failed:', error)
+    return null
+  }
+}
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   const PUBLIC_ROUTES: string[] = [ROUTES.HOME, ROUTES.PUBLIC.PRODUCTS] // Routes that can be accessed without authentication, including public pages and auth pages (login/signup)
@@ -12,8 +30,10 @@ export function middleware(request: NextRequest) {
   const AUTH_ROUTES: string[] = [] // Routes that need to sign in to access, but no role requirement
 
   const token = request.cookies.get('auth_token')?.value
-  const userRole = request.cookies.get('user_role')?.value // 'Admin', 'Customer', or undefined
-  const isAuthenticated = !!token
+  const userPayload = token ? await verifyGoogleOrBackendToken(token) : null
+
+  const isAuthenticated = !!userPayload
+  const userRole = userPayload?.role ? 'Admin' : 'Customer'
 
   const isPublicRoute = PUBLIC_ROUTES.some(
     route => pathname === route || pathname.startsWith(`${route}/`),
