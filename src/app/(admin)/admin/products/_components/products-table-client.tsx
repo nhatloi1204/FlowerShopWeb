@@ -81,6 +81,12 @@ export function ProductsTableClient({
   const [selectedStatus, setSelectedStatus] =
     useState<ProductStatusFilter>('all')
 
+  const statusLabels: Record<string, string> = {
+    Available: 'Available',
+    OutOfStock: 'Out of Stock',
+    Discontinued: 'Discontinued',
+  }
+
   const handlePaginationChange = useCallback(
     (updater: Updater<PaginationState>) => {
       setPagination(current => {
@@ -127,10 +133,6 @@ export function ProductsTableClient({
   useEffect(() => {
     fetchProducts()
   }, [fetchProducts])
-
-  const handleDelete = (id: number) => {
-    void id
-  }
 
   const columns = useMemo<ColumnDef<ProductOutput>[]>(
     () => [
@@ -182,7 +184,11 @@ export function ProductsTableClient({
         accessorKey: 'status',
         header: 'Status',
         size: 130,
-        cell: ({ row }) => row.original.status ?? '--',
+        cell: ({ row }) => {
+          return row.original.status
+            ? statusLabels[row.original.status] || row.original.status
+            : '--'
+        },
       },
       {
         accessorKey: 'updatedAt',

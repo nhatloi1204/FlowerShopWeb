@@ -6,6 +6,7 @@ import { ProductForm } from '../_components/product-form'
 import { productCategoryService } from '@/services'
 import type { ProductCategoryOutput } from '@/validations'
 import { ADMIN_TITLES, ROUTES } from '@/constants/routes.constant'
+import { ProductFormSkeleton } from '../_components/product-form-skeleton'
 
 export default function ProductCreatePage() {
   const router = useRouter()
@@ -25,6 +26,14 @@ export default function ProductCreatePage() {
     fetchCategories()
   }, [])
 
+  if (loading) {
+    return (
+      <div className='flex flex-1 flex-col gap-4 animate-pulse'>
+        <ProductFormSkeleton />
+      </div>
+    )
+  }
+
   return (
     <div className='flex flex-1 flex-col gap-4'>
       <div>
@@ -34,17 +43,13 @@ export default function ProductCreatePage() {
         <p className='text-sm text-muted-foreground'>Add a new product.</p>
       </div>
 
-      {loading ? (
-        <div className='text-sm text-muted-foreground'>Loading form...</div>
-      ) : (
-        <ProductForm
-          globalCategories={categories}
-          onSuccess={() => {
-            router.push(ROUTES.ADMIN.PRODUCTS.INDEX)
-            router.refresh()
-          }}
-        />
-      )}
+      <ProductForm
+        globalCategories={categories}
+        onSuccess={() => {
+          router.push(ROUTES.ADMIN.PRODUCTS.INDEX)
+          router.refresh()
+        }}
+      />
     </div>
   )
 }

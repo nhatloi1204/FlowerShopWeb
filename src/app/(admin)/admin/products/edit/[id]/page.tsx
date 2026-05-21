@@ -4,6 +4,7 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ProductForm } from '../../_components/product-form'
+import { ProductFormSkeleton } from '../../_components/product-form-skeleton'
 import { productCategoryService, productService } from '@/services'
 import type { ProductCategoryOutput, ProductOutput } from '@/validations'
 import { ADMIN_TITLES, ROUTES } from '@/constants/routes.constant'
@@ -39,6 +40,14 @@ export default function ProductEditPage({ params }: ProductEditPageProps) {
     fetchData()
   }, [productId])
 
+  if (loading) {
+    return (
+      <div className='flex flex-1 flex-col gap-4 animate-pulse'>
+        <ProductFormSkeleton />
+      </div>
+    )
+  }
+
   return (
     <div className='flex flex-1 flex-col gap-4'>
       <div>
@@ -48,9 +57,7 @@ export default function ProductEditPage({ params }: ProductEditPageProps) {
         <p className='text-sm text-muted-foreground'>Update product details.</p>
       </div>
 
-      {loading ? (
-        <div className='text-sm text-muted-foreground'>Loading form...</div>
-      ) : product ? (
+      {product ? (
         <ProductForm
           initialData={product}
           globalCategories={categories}

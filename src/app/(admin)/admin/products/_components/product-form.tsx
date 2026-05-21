@@ -161,9 +161,7 @@ export function ProductForm({
         onSubmit={onSubmit}
         className='grid grid-cols-1 gap-6 lg:grid-cols-3 items-start'
       >
-        {/* CỘT CHÍNH BÊN TRÁI (75%) */}
         <div className='lg:col-span-2 space-y-6'>
-          {/* Khối Thông tin sản phẩm */}
           <Card>
             <CardHeader>
               <CardTitle className='text-sm font-semibold uppercase tracking-wider text-muted-foreground'>
@@ -214,7 +212,6 @@ export function ProductForm({
             </CardContent>
           </Card>
 
-          {/* Khối Quản lý hình ảnh */}
           <Card>
             <CardHeader>
               <CardTitle className='text-sm font-semibold uppercase tracking-wider text-muted-foreground'>
@@ -232,7 +229,6 @@ export function ProductForm({
           </Card>
         </div>
 
-        {/* CỘT SIDEBAR BÊN PHẢI (25%) */}
         <div className='space-y-6'>
           <FormSidebar
             control={form.control}
@@ -243,7 +239,6 @@ export function ProductForm({
             }))}
           />
 
-          {/* Cụm nút bấm Actions được dồn gọn gàng vào dưới chân Sidebar */}
           <div className='flex items-center gap-3 pt-2'>
             <Button
               type='button'
