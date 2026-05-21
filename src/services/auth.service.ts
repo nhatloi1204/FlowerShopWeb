@@ -4,7 +4,7 @@ import {
   LoginRequest,
   LoginResponseSchema,
   RegisterRequest,
-} from '@/validations/auth.schema'
+} from '@/validations'
 import { toast } from 'sonner'
 
 export const authService = {
@@ -15,7 +15,7 @@ export const authService = {
         throw new Error('NoResponseData')
       }
 
-      const validated = LoginResponseSchema.parse(response.data)
+      const validated = LoginResponseSchema.parse(response)
 
       if (validated.success) {
         toast.success(validated.message || 'Login successful')
@@ -31,7 +31,7 @@ export const authService = {
     try {
       const response = await apiClient.post('/Auth/register', registerData)
 
-      const validated = LoginResponseSchema.parse(response.data)
+      const validated = LoginResponseSchema.parse(response)
 
       return {
         data: validated.data,
@@ -52,7 +52,7 @@ export const authService = {
         throw new Error('NoResponseData')
       }
 
-      const validated = LoginResponseSchema.parse(response.data)
+      const validated = LoginResponseSchema.parse(response)
 
       if (validated.success) {
         toast.success(validated.message || 'Login successful')

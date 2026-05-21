@@ -28,7 +28,7 @@ apiClient.interceptors.response.use(
       toast.error(msg)
       throw new Error(msg)
     }
-    return response
+    return response.data
   },
   error => {
     // Case 2: Error response from server (e.g., 400, 401, 500)
