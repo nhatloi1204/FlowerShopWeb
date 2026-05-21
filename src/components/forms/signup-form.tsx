@@ -20,11 +20,8 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 
-import { authService } from '@/services/auth.service'
-import {
-  RegisterRequest,
-  RegisterRequestSchema,
-} from '@/validations/auth.schema'
+import { authService } from '@/services'
+import { RegisterRequest, RegisterRequestSchema } from '@/validations'
 import { useAuthStore } from '@/store/useAuthStore'
 import { ROUTES } from '@/constants/routes.constant'
 import { GoogleAuthButton } from '../shared/google-auth-button'

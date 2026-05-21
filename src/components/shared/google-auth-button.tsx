@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { Spinner } from '@/components/ui/spinner'
 
 import { Button } from '@/components/ui/button'
-import { authService } from '@/services/auth.service'
+import { authService } from '@/services'
 import { useAuthStore } from '@/store/useAuthStore'
 import { ROUTES } from '@/constants/routes.constant'
 

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
-import { LoginData, JwtPayload } from '@/validations/auth.schema'
+import { LoginData, JwtPayload } from '@/validations'
 
 interface AuthState {
   isAuthenticated: boolean
