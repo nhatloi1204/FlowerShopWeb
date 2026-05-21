@@ -87,7 +87,6 @@ export function ImageUploadManager({
         </p>
       </div>
 
-      {/* Thay đổi từ grid-cols-2 lên hệ linh hoạt md:grid-cols-4 để layout trải rộng đều */}
       <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
         {value.map(img => (
           <div
@@ -130,7 +129,6 @@ export function ImageUploadManager({
           </div>
         ))}
 
-        {/* Nút add ảnh được bo góc mượt mà đồng bộ */}
         <label className='flex flex-col items-center justify-center gap-2 aspect-square rounded-lg border-2 border-dashed border-muted-foreground/30 px-2 text-center text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:border-muted-foreground/50 cursor-pointer'>
           <Plus className='h-5 w-5 text-muted-foreground/70' />
           <span>Add Image</span>
