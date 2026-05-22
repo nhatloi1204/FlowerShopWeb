@@ -11,6 +11,7 @@ import type {
   ProductCategoryOutput,
   ProductFormData,
   ProductStatus,
+  ProductTagOutput,
 } from '@/validations'
 
 import {
@@ -35,14 +36,17 @@ interface FormSidebarProps {
   control: Control<ProductFormData>
   categories: ProductCategoryOutput[]
   statusOptions: StatusOption[]
+  tags: ProductTagOutput[]
 }
 
 export function FormSidebar({
   control,
   categories,
   statusOptions,
+  tags,
 }: FormSidebarProps) {
-  const anchor = useComboboxAnchor()
+  const categoryAnchor = useComboboxAnchor()
+  const tagAnchor = useComboboxAnchor()
 
   return (
     <div className='space-y-5 rounded-xl border bg-card p-5 shadow-sm'>
@@ -140,7 +144,7 @@ export function FormSidebar({
                     }}
                   >
                     <ComboboxChips
-                      ref={anchor}
+                      ref={categoryAnchor}
                       className='w-full min-h-9 border border-input rounded-md bg-transparent p-1 gap-1 flex flex-wrap shadow-sm focus-within:ring-1 focus-within:ring-ring'
                     >
                       <ComboboxValue>
@@ -171,7 +175,7 @@ export function FormSidebar({
                     </ComboboxChips>
 
                     <ComboboxContent
-                      anchor={anchor}
+                      anchor={categoryAnchor}
                       className='w-(--radix-popover-trigger-width)'
                     >
                       <ComboboxEmpty>No categories found.</ComboboxEmpty>
@@ -182,6 +186,89 @@ export function FormSidebar({
                             value={String(category.id)}
                           >
                             {category.name}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )
+          }}
+        />
+      </div>
+
+      {/* TAGS BLOCK */}
+      <div className='border-t border-dashed pt-4'>
+        <FormField
+          control={control}
+          name='tagIds'
+          render={({ field }) => {
+            const currentSelectedValues = Array.isArray(field.value)
+              ? field.value.map(String)
+              : []
+            return (
+              <FormItem className='flex flex-col'>
+                <FormLabel className='font-semibold text-muted-foreground mb-1'>
+                  Product Tags
+                </FormLabel>
+                <FormControl>
+                  <Combobox
+                    multiple
+                    autoHighlight
+                    items={tags}
+                    value={currentSelectedValues}
+                    onValueChange={(nextValue: string[]) => {
+                      const numberIds = nextValue
+                        .map(val => parseInt(val, 10))
+                        .filter(Boolean)
+                      field.onChange(numberIds)
+                    }}
+                    filter={(value, search) => {
+                      const tag = tags.find(t => String(t.id) === value)
+                      if (!tag) return false
+                      return tag.name
+                        .toLowerCase()
+                        .includes(search.toLowerCase())
+                    }}
+                  >
+                    <ComboboxChips
+                      ref={tagAnchor}
+                      className='w-full min-h-9 border border-input rounded-md bg-transparent p-1 gap-1 flex flex-wrap shadow-sm focus-within:ring-1 focus-within:ring-ring'
+                    >
+                      <ComboboxValue>
+                        {(values: string[]) => (
+                          <>
+                            {values.map((id: string) => {
+                              const tag = tags.find(t => String(t.id) === id)
+                              if (!tag) return null
+                              return (
+                                <ComboboxChip key={id}>{tag.name}</ComboboxChip>
+                              )
+                            })}
+                            <ComboboxChipsInput
+                              placeholder={
+                                currentSelectedValues.length === 0
+                                  ? 'Select tags...'
+                                  : ''
+                              }
+                              className='flex-1 min-w-15 bg-transparent text-sm outline-none placeholder:text-muted-foreground'
+                            />
+                          </>
+                        )}
+                      </ComboboxValue>
+                    </ComboboxChips>
+
+                    <ComboboxContent
+                      anchor={tagAnchor}
+                      className='w-(--radix-popover-trigger-width)'
+                    >
+                      <ComboboxEmpty>No tags found.</ComboboxEmpty>
+                      <ComboboxList>
+                        {(tag: ProductTagOutput) => (
+                          <ComboboxItem key={tag.id} value={String(tag.id)}>
+                            {tag.name}
                           </ComboboxItem>
                         )}
                       </ComboboxList>

@@ -3,21 +3,26 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ProductForm } from '../_components/product-form'
-import { productCategoryService } from '@/services'
-import type { ProductCategoryOutput } from '@/validations'
+import { productCategoryService, productTagService } from '@/services'
+import type { ProductCategoryOutput, ProductTagOutput } from '@/validations'
 import { ADMIN_TITLES, ROUTES } from '@/constants/routes.constant'
 import { ProductFormSkeleton } from '../_components/product-form-skeleton'
 
 export default function ProductCreatePage() {
   const router = useRouter()
   const [categories, setCategories] = useState<ProductCategoryOutput[]>([])
+  const [tags, setTags] = useState<ProductTagOutput[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const data = await productCategoryService.getAll()
-        setCategories(data)
+        const [categoryData, tagData] = await Promise.all([
+          productCategoryService.getAll(),
+          productTagService.getAll(),
+        ])
+        setCategories(categoryData)
+        setTags(tagData)
       } finally {
         setLoading(false)
       }
@@ -45,6 +50,7 @@ export default function ProductCreatePage() {
 
       <ProductForm
         globalCategories={categories}
+        globalTags={tags}
         onSuccess={() => {
           router.push(ROUTES.ADMIN.PRODUCTS.INDEX)
           router.refresh()

@@ -5,8 +5,16 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ProductForm } from '../../_components/product-form'
 import { ProductFormSkeleton } from '../../_components/product-form-skeleton'
-import { productCategoryService, productService } from '@/services'
-import type { ProductCategoryOutput, ProductOutput } from '@/validations'
+import {
+  productCategoryService,
+  productService,
+  productTagService,
+} from '@/services'
+import type {
+  ProductCategoryOutput,
+  ProductOutput,
+  ProductTagOutput,
+} from '@/validations'
 import { ADMIN_TITLES, ROUTES } from '@/constants/routes.constant'
 
 interface ProductEditPageProps {
@@ -19,18 +27,21 @@ export default function ProductEditPage({ params }: ProductEditPageProps) {
   const productId = parseInt(unwrappedParams.id)
 
   const [categories, setCategories] = useState<ProductCategoryOutput[]>([])
+  const [tags, setTags] = useState<ProductTagOutput[]>([])
   const [product, setProduct] = useState<ProductOutput | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [categoryData, productData] = await Promise.all([
+        const [categoryData, tagData, productData] = await Promise.all([
           productCategoryService.getAll(),
+          productTagService.getAll(),
           productService.getProductById(productId),
         ])
 
         setCategories(categoryData)
+        setTags(tagData)
         setProduct(productData)
       } finally {
         setLoading(false)
@@ -61,6 +72,7 @@ export default function ProductEditPage({ params }: ProductEditPageProps) {
         <ProductForm
           initialData={product}
           globalCategories={categories}
+          globalTags={tags}
           onSuccess={() => {
             router.push(ROUTES.ADMIN.PRODUCTS.INDEX)
             router.refresh()

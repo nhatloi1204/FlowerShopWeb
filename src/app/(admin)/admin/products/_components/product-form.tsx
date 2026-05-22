@@ -23,6 +23,7 @@ import {
   ProductOutput,
   ProductStatus,
   productFormSchema,
+  ProductTagOutput,
 } from '@/validations'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
@@ -33,6 +34,7 @@ import { ROUTES } from '@/constants/routes.constant'
 interface ProductFormProps {
   initialData?: ProductOutput | null
   globalCategories: ProductCategoryOutput[]
+  globalTags: ProductTagOutput[]
   onSuccess?: () => void
   onCancel?: () => void
 }
@@ -46,6 +48,7 @@ const statusOptions: Array<{ value: ProductStatus; label: string }> = [
 export function ProductForm({
   initialData,
   globalCategories,
+  globalTags,
   onSuccess,
   onCancel,
 }: ProductFormProps) {
@@ -55,6 +58,7 @@ export function ProductForm({
   const uploadedInSession = useRef<string[]>([])
 
   const defaultCategoryIds = initialData?.categoryIds ?? []
+  const defaultTagIds = initialData?.tagIds ?? []
 
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema) as Resolver<ProductFormData>,
@@ -65,6 +69,7 @@ export function ProductForm({
       status: initialData?.status ?? 'Available',
       description: initialData?.description ?? '',
       categoryIds: defaultCategoryIds,
+      tagIds: defaultTagIds,
     },
   })
 
@@ -129,6 +134,9 @@ export function ProductForm({
             price: Number(values.price),
             categoryIds: Array.isArray(values.categoryIds)
               ? values.categoryIds.map(id => parseInt(String(id), 10))
+              : [],
+            tagIds: Array.isArray(values.tagIds)
+              ? values.tagIds.map(id => parseInt(String(id), 10))
               : [],
             imageUrls: managedImages.map(img => img.url),
           }
@@ -233,6 +241,7 @@ export function ProductForm({
           <FormSidebar
             control={form.control}
             categories={globalCategories}
+            tags={globalTags}
             statusOptions={statusOptions.map(({ value, label }) => ({
               value,
               label,
