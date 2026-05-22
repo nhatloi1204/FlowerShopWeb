@@ -24,6 +24,7 @@ export const ProductOutputSchema = z.object({
   companyId: z.number().nullable().optional(),
   imageUrls: z.array(z.string()).default([]),
   categoryIds: z.array(z.number()).default([]),
+  tagIds: z.array(z.number()).default([]),
   createdAt: z.string().nullable().optional(),
   updatedAt: z.string().nullable().optional(),
 })
@@ -65,6 +66,7 @@ export const productFormSchema = z.object({
   status: z.enum(['Available', 'OutOfStock', 'Discontinued'] as const),
   description: z.string().optional().default(''),
   categoryIds: z.array(z.number()).default([]),
+  tagIds: z.array(z.number()).default([]),
 })
 
 export type ProductOutput = z.infer<typeof ProductOutputSchema>

@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation'
 import { useForm, Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  categoryFormSchema,
-  type CategoryFormData,
-  type ProductCategoryOutput,
+  tagFormSchema,
+  type TagFormData,
+  type ProductTagOutput,
 } from '@/validations'
-import { productCategoryService } from '@/services'
+import { productTagService } from '@/services'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Form,
@@ -20,74 +20,72 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Loader2, Plus, Save, X } from 'lucide-react'
 import { toast } from 'sonner'
 
-interface CategoryFormPanelProps {
-  activeCategory?: ProductCategoryOutput
+interface TagFormPanelProps {
+  activeTag?: ProductTagOutput
   onRefresh?: () => Promise<void>
 }
 
-export function CategoryFormPanel({
-  activeCategory,
-  onRefresh,
-}: CategoryFormPanelProps) {
+export function TagFormPanel({ activeTag, onRefresh }: TagFormPanelProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const isEditMode = !!activeCategory
+  const isEditMode = !!activeTag
 
-  const form = useForm<CategoryFormData>({
-    resolver: zodResolver(categoryFormSchema) as Resolver<CategoryFormData>,
+  const form = useForm<TagFormData>({
+    resolver: zodResolver(tagFormSchema) as Resolver<TagFormData>,
     defaultValues: {
       name: '',
-      description: '',
     },
   })
 
   useEffect(() => {
-    if (activeCategory) {
+    if (activeTag) {
       form.reset({
-        name: activeCategory.name,
-        description: activeCategory.description ?? '',
+        name: activeTag.name ?? '',
       })
     } else {
-      form.reset({ name: '', description: '' })
+      form.reset({ name: '' })
     }
-  }, [activeCategory, form])
+  }, [activeTag, form])
 
-  const onSubmit = async (values: CategoryFormData) => {
+  const onSubmit = async (values: TagFormData) => {
     try {
       setLoading(true)
-      if (isEditMode && activeCategory) {
-        await productCategoryService.update(activeCategory.id, values)
-        toast.success('Updated category successfully!')
+      if (isEditMode && activeTag) {
+        await productTagService.update(activeTag.id, values)
+        toast.success('Updated tag successfully!')
         handleCancel()
       } else {
-        await productCategoryService.create(values)
-        toast.success('Created category successfully!')
-        form.reset({ name: '', description: '' })
+        await productTagService.create(values)
+        toast.success('Created tag successfully!')
+        form.reset({ name: '' })
       }
 
       if (onRefresh) await onRefresh()
-    } catch (err) {
-      toast.error('Something went wrong. Please try again.')
+      // eslint-disable-next-line
+    } catch (err: any) {
+      const errorMsg =
+        err?.response?.data?.message ||
+        'Something went wrong. Please try again.'
+      toast.error(errorMsg)
     } finally {
       setLoading(false)
     }
   }
 
   const handleCancel = () => {
-    form.reset({ name: '', description: '' })
-    router.push('/admin/categories')
+    form.reset({ name: '' })
+    router.push('/admin/tags')
   }
 
   return (
     <Card className='shadow-sm border-xl'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-4'>
         <CardTitle className='text-sm font-bold uppercase tracking-wider text-muted-foreground'>
-          {isEditMode ? 'Update Category' : 'New Category'}
+          {isEditMode ? 'Update Tag' : 'New Tag'}
         </CardTitle>
         <Button
           type='button'
@@ -111,28 +109,10 @@ export function CategoryFormPanel({
               name='name'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category Name</FormLabel>
+                  <FormLabel>Tag Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder='e.g. Wedding Flowers, Birthday...'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name='description'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder='Enter a brief description for this category...'
-                      className='min-h-24 resize-none'
+                      placeholder='e.g. Hot Trend, New Arrival, Discount...'
                       {...field}
                     />
                   </FormControl>
@@ -165,7 +145,7 @@ export function CategoryFormPanel({
                 ) : (
                   <Plus className='mr-2 h-4 w-4' />
                 )}
-                {isEditMode ? 'Save Changes' : 'Add Category'}
+                {isEditMode ? 'Save Changes' : 'Add Tag'}
               </Button>
             </div>
           </form>

@@ -12,33 +12,33 @@ import { DataTable } from '@/components/ui/data-table'
 import { Button } from '@/components/ui/button'
 import { Edit2, Trash2 } from 'lucide-react'
 import { ConfirmDeleteDialog } from '@/components/shared/confirm-delete-dialog'
-import { productCategoryService } from '@/services'
-import { ProductCategoryOutput } from '@/validations'
+import { productTagService } from '@/services/'
+import { ProductTagOutput } from '@/validations'
 import { DataTablePagination } from '@/components/ui/data-table-pagination'
 import { toast } from 'sonner'
 
-interface CategoriesTableProps {
-  data: ProductCategoryOutput[]
+interface TagsTableProps {
+  data: ProductTagOutput[]
   currentEditingId?: number
   onRefresh?: () => Promise<void>
 }
 
-export function CategoriesTable({
+export function TagsTable({
   data,
   currentEditingId,
   onRefresh,
-}: CategoriesTableProps) {
+}: TagsTableProps) {
   const router = useRouter()
   const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const handleEditToggle = useCallback(
     (id: number) => {
       if (currentEditingId === id) {
-        router.push('/admin/categories')
+        router.push('/admin/tags')
         return
       }
 
-      router.push(`/admin/categories?editId=${id}`)
+      router.push(`/admin/tags?editId=${id}`)
     },
     [currentEditingId, router],
   )
@@ -46,61 +46,62 @@ export function CategoriesTable({
   const handleDelete = async () => {
     if (!deleteId) return
     try {
-      const response = await productCategoryService.delete(deleteId)
+      const response = await productTagService.delete(deleteId)
 
-      if (
-        response?.success === false ||
-        response?.message?.includes('cannot')
-      ) {
-        toast.error(
-          response.message || 'Cannot delete category containing products!',
-        )
+      if (response?.success === false) {
+        toast.error(response.message || 'Failed to delete tag.')
       } else {
-        toast.success('Category deleted successfully!')
+        toast.success('Tag deleted successfully!')
         if (currentEditingId === deleteId) {
-          router.push('/admin/categories')
+          router.push('/admin/tags')
         }
         if (onRefresh) await onRefresh()
       }
       // eslint-disable-next-line
     } catch (err: any) {
-      const errorMsg =
-        err?.response?.data?.message || 'Failed to delete category.'
+      const errorMsg = err?.response?.data?.message || 'Failed to delete tag.'
       toast.error(errorMsg)
     } finally {
       setDeleteId(null)
     }
   }
 
-  const columns = useMemo<ColumnDef<ProductCategoryOutput>[]>(
+  const columns = useMemo<ColumnDef<ProductTagOutput>[]>(
     () => [
       {
         accessorKey: 'name',
-        header: 'Category Name',
-        size: 170,
-        cell: ({ row }) => (
-          <div className='font-medium'>{row.original.name}</div>
-        ),
-      },
-      {
-        accessorKey: 'description',
-        header: 'Description',
+        header: 'Tag Name',
+
         size: 200,
         cell: ({ row }) => (
-          <div className='text-sm text-muted-foreground max-w-xs truncate'>
-            {row.original.description || '-'}
-          </div>
+          <div className='font-medium text-sm'>{row.original.name}</div>
         ),
       },
       {
-        accessorKey: 'slug',
-        header: 'Slug / URL',
-        size: 170,
-        cell: ({ row }) => (
-          <span className='text-sm font-mono text-muted-foreground'>
-            /{row.original.slug}
-          </span>
-        ),
+        accessorKey: 'createdAt',
+        header: 'Created At',
+        size: 200,
+        cell: ({ row }) => {
+          const date = new Date(row.original.createdAt)
+          return (
+            <div className='text-sm text-muted-foreground'>
+              {date.toLocaleDateString('vi-VN')}
+            </div>
+          )
+        },
+      },
+      {
+        accessorKey: 'updatedAt',
+        header: 'Updated At',
+        size: 200,
+        cell: ({ row }) => {
+          const date = new Date(row.original.updatedAt)
+          return (
+            <div className='text-sm text-muted-foreground'>
+              {date.toLocaleDateString('vi-VN')}
+            </div>
+          )
+        },
       },
       {
         id: 'actions',
@@ -152,11 +153,11 @@ export function CategoriesTable({
     <div className='space-y-4'>
       <div className='rounded-xl border bg-card overflow-hidden'>
         <div className='flex items-center justify-between border-b px-4 py-3 text-sm text-muted-foreground'>
-          <span>Total {data.length} categories</span>
+          <span>Total {data.length} tags</span>
         </div>
         <DataTable
           table={table}
-          emptyMessage='No categories found.'
+          emptyMessage='No tags found.'
           isLoading={false}
         />
       </div>
@@ -167,8 +168,8 @@ export function CategoriesTable({
         isOpen={deleteId !== null}
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}
-        title='Delete Category?'
-        description='Are you sure you want to delete this category? This action cannot be undone and will be blocked if it contains active flowers.'
+        title='Delete Tag?'
+        description='Are you sure you want to delete this tag? This action cannot be undone. Products tied to this tag will simply lose the tag association.'
       />
     </div>
   )
