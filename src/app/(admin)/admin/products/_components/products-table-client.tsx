@@ -20,6 +20,7 @@ import { ProductCategoryOutput } from '@/validations/product-category.schema'
 import { Plus } from 'lucide-react'
 import { ConfirmDeleteDialog } from '@/components/shared/confirm-delete-dialog'
 import { ROUTES } from '@/constants/routes.constant'
+import { productCategoryService } from '@/services'
 
 const formatPrice = (product: ProductOutput) => {
   if (product.price != null) {
@@ -33,10 +34,6 @@ const formatPrice = (product: ProductOutput) => {
   }
 
   return '--'
-}
-
-interface ProductsTableClientProps {
-  globalCategories: ProductCategoryOutput[]
 }
 
 const getErrorMessage = (error: unknown) => {
@@ -53,9 +50,17 @@ const getErrorMessage = (error: unknown) => {
 
 type ProductStatusFilter = 'Available' | 'OutOfStock' | 'Discontinued' | 'all'
 
-export function ProductsTableClient({
-  globalCategories,
-}: ProductsTableClientProps) {
+export function ProductsTableClient() {
+  const [categories, setCategories] = useState<ProductCategoryOutput[]>([])
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const data = await productCategoryService.getAll()
+      setCategories(data)
+    }
+
+    fetchCategories()
+  }, [])
+
   const [productIdToDelete, setProductIdToDelete] = useState<number | null>(
     null,
   )
@@ -260,7 +265,7 @@ export function ProductsTableClient({
           className='flex h-9 w-full max-w-55 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
         >
           <option value='all'>All categories</option>
-          {globalCategories.map(category => (
+          {categories.map(category => (
             <option key={category.id} value={category.id}>
               {category.name}
             </option>

@@ -46,7 +46,6 @@ apiClient.interceptors.response.use(
         'Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng hoặc Backend!',
       )
     }
-
     throw new Error('NetworkError')
   },
 )
