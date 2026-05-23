@@ -1,5 +1,4 @@
 import axios from 'axios'
-import Cookies from 'js-cookie'
 import { toast } from 'sonner'
 
 const apiClient = axios.create({
@@ -9,12 +8,19 @@ const apiClient = axios.create({
 
 // Request Interceptor: auto-attach JWT token from cookies to Authorization header
 apiClient.interceptors.request.use(async config => {
-  // let token: string | undefined
-  if (typeof window !== 'undefined') {
-    const token = Cookies.get('auth_token') // Get token from cookies (client-side)
-    if (token && config.headers) {
-      config.headers['Authorization'] = `Bearer ${token}`
-    }
+  let token: string | undefined
+
+  if (typeof window === 'undefined') {
+    const { cookies } = await import('next/headers')
+    const cookieStore = await cookies()
+    token = cookieStore.get('auth_token')?.value
+  } else {
+    const { default: Cookies } = await import('js-cookie')
+    token = Cookies.get('auth_token')
+  }
+
+  if (token && config.headers) {
+    config.headers['Authorization'] = `Bearer ${token}`
   }
 
   return config
