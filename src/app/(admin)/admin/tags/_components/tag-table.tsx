@@ -20,25 +20,20 @@ import { toast } from 'sonner'
 interface TagsTableProps {
   data: ProductTagOutput[]
   currentEditingId?: number
-  onRefresh?: () => Promise<void>
 }
 
-export function TagsTable({
-  data,
-  currentEditingId,
-  onRefresh,
-}: TagsTableProps) {
+export function TagsTable({ data, currentEditingId }: TagsTableProps) {
   const router = useRouter()
   const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const handleEditToggle = useCallback(
     (id: number) => {
       if (currentEditingId === id) {
-        router.push('/admin/tags')
+        router.replace('/admin/tags')
         return
       }
 
-      router.push(`/admin/tags?editId=${id}`)
+      router.replace(`/admin/tags?editId=${id}`)
     },
     [currentEditingId, router],
   )
@@ -53,9 +48,9 @@ export function TagsTable({
       } else {
         toast.success('Tag deleted successfully!')
         if (currentEditingId === deleteId) {
-          router.push('/admin/tags')
+          router.replace('/admin/tags')
         }
-        if (onRefresh) await onRefresh()
+        router.refresh()
       }
       // eslint-disable-next-line
     } catch (err: any) {

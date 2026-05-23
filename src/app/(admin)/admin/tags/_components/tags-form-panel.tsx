@@ -26,10 +26,15 @@ import { toast } from 'sonner'
 
 interface TagFormPanelProps {
   activeTag?: ProductTagOutput
-  onRefresh?: () => Promise<void>
+  variant?: 'card' | 'plain'
+  showCloseButton?: boolean
 }
 
-export function TagFormPanel({ activeTag, onRefresh }: TagFormPanelProps) {
+export function TagFormPanel({
+  activeTag,
+  variant = 'card',
+  showCloseButton = true,
+}: TagFormPanelProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const isEditMode = !!activeTag
@@ -63,8 +68,7 @@ export function TagFormPanel({ activeTag, onRefresh }: TagFormPanelProps) {
         toast.success('Created tag successfully!')
         form.reset({ name: '' })
       }
-
-      if (onRefresh) await onRefresh()
+      router.refresh()
       // eslint-disable-next-line
     } catch (err: any) {
       const errorMsg =
@@ -77,80 +81,90 @@ export function TagFormPanel({ activeTag, onRefresh }: TagFormPanelProps) {
   }
 
   const handleCancel = () => {
-    form.reset({ name: '' })
-    router.push('/admin/tags')
+    router.replace('/admin/tags')
   }
 
-  return (
-    <Card className='shadow-sm border-xl'>
-      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-4'>
-        <CardTitle className='text-sm font-bold uppercase tracking-wider text-muted-foreground'>
+  const content = (
+    <>
+      <div className='flex flex-row items-center justify-between space-y-0 pb-4'>
+        <div className='text-sm font-bold uppercase tracking-wider text-muted-foreground'>
           {isEditMode ? 'Update Tag' : 'New Tag'}
-        </CardTitle>
-        <Button
-          type='button'
-          size='icon'
-          variant='ghost'
-          onClick={handleCancel}
-          className={
-            isEditMode ? 'size-8' : 'size-8 opacity-0 pointer-events-none'
-          }
-          aria-hidden={!isEditMode}
-          tabIndex={isEditMode ? 0 : -1}
-        >
-          <X className='size-4' />
-        </Button>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-            <FormField
-              control={form.control}
-              name='name'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tag Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='e.g. Hot Trend, New Arrival, Discount...'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        </div>
+        {showCloseButton && (
+          <Button
+            type='button'
+            size='icon'
+            variant='ghost'
+            onClick={handleCancel}
+            className={
+              isEditMode ? 'size-8' : 'size-8 opacity-0 pointer-events-none'
+            }
+            aria-hidden={!isEditMode}
+            tabIndex={isEditMode ? 0 : -1}
+          >
+            <X className='size-4' />
+          </Button>
+        )}
+      </div>
 
-            <div className='flex gap-2 pt-2'>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+          <FormField
+            control={form.control}
+            name='name'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tag Name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='e.g. Hot Trend, New Arrival, Discount...'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className='flex gap-2 pt-2'>
+            {isEditMode && (
               <Button
                 type='button'
                 variant='outline'
                 onClick={handleCancel}
-                disabled={loading || !isEditMode}
-                className={
-                  isEditMode
-                    ? 'w-1/3'
-                    : 'hidden w-0 opacity-0 pointer-events-none'
-                }
+                disabled={loading}
+                className='w-1/3'
                 aria-hidden={!isEditMode}
                 tabIndex={isEditMode ? 0 : -1}
               >
                 Cancel
               </Button>
-              <Button type='submit' disabled={loading} className='flex-1'>
-                {loading ? (
-                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                ) : isEditMode ? (
-                  <Save className='mr-2 h-4 w-4' />
-                ) : (
-                  <Plus className='mr-2 h-4 w-4' />
-                )}
-                {isEditMode ? 'Save Changes' : 'Add Tag'}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
+            )}
+            <Button type='submit' disabled={loading} className='flex-1'>
+              {loading ? (
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+              ) : isEditMode ? (
+                <Save className='mr-2 h-4 w-4' />
+              ) : (
+                <Plus className='mr-2 h-4 w-4' />
+              )}
+              {isEditMode ? 'Save Changes' : 'Add Tag'}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </>
+  )
+
+  if (variant === 'plain') {
+    return <div className='space-y-4'>{content}</div>
+  }
+
+  return (
+    <Card className='shadow-sm border-xl'>
+      <CardHeader>{content}</CardHeader>
+
+      <CardContent />
     </Card>
   )
 }
