@@ -26,12 +26,18 @@ export default function RootLayout({
   const googleClientId: string = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!
 
   return (
-    <html lang='en' className={cn(inter.variable, 'font-sans', geist.variable)}>
-      <body className='min-h-full flex flex-col'>
-        <GoogleOAuthProvider clientId={googleClientId}>
-          <Toaster richColors closeButton position='bottom-right' />
-          <main>{children}</main>
-        </GoogleOAuthProvider>
+    <html
+      lang='en'
+      className={cn(inter.variable, 'font-sans', geist.variable)}
+      suppressHydrationWarning
+    >
+      <body>
+        <div className='min-h-full bg-background antialiased flex flex-col'>
+          <GoogleOAuthProvider clientId={googleClientId}>
+            <Toaster richColors closeButton position='bottom-right' />
+            {children}
+          </GoogleOAuthProvider>
+        </div>
       </body>
     </html>
   )

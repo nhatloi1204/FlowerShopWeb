@@ -1,6 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -47,6 +47,34 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  @keyframes flower-dropdown-in {
+    from {
+      opacity: 0;
+      transform: scaleY(0.92);
+      transform-origin: top;
+    }
+    to {
+      opacity: 1;
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+  }
+  @keyframes flower-dropdown-out {
+    from {
+      opacity: 1;
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+    to {
+      opacity: 0;
+      transform: scaleY(0.92);
+      transform-origin: top;
+    }
+  }
+
+  --animate-flower-down: flower-dropdown-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-flower-up: flower-dropdown-out 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body {
@@ -86,6 +114,30 @@ body {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+}
+
+.theme-client {
+  --primary: oklch(0.603 0.169 126.315);
+  --primary-foreground: oklch(0.985 0 0);
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+
+  --muted: oklch(0.95 0.02 126.315);
+  --muted-foreground: oklch(0.45 0.05 126.315);
+
+  --accent: oklch(0.92 0.03 126.315);
+  --accent-foreground: oklch(0.25 0.08 126.315);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+
+  --border: oklch(0.9 0.015 126.315);
+  --input: oklch(0.9 0.015 126.315);
+  --ring: oklch(0.603 0.169 126.315);
 }
 
 .dark {

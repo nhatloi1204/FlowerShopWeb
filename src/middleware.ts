@@ -23,7 +23,13 @@ async function verifyGoogleOrBackendToken(token: string) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  const PUBLIC_ROUTES: string[] = [ROUTES.HOME, ROUTES.PUBLIC.PRODUCTS] // Routes that can be accessed without authentication, including public pages and auth pages (login/signup)
+  const PUBLIC_ROUTES: string[] = [
+    ROUTES.PUBLIC.HOME,
+    ROUTES.PUBLIC.SHOP,
+    ROUTES.PUBLIC.ABOUT,
+    ROUTES.PUBLIC.CONTACT,
+    ROUTES.PUBLIC.BLOG,
+  ] // Routes that can be accessed without authentication, including public pages and auth pages (login/signup)
 
   const GUEST_ROUTES: string[] = [ROUTES.AUTH.LOGIN, ROUTES.AUTH.SIGNUP] // Routes that should only be accessed by unauthenticated users (e.g., login, signup)
 
@@ -56,7 +62,7 @@ export async function middleware(request: NextRequest) {
   if (isAuthenticated) {
     if (isGuestRoute) {
       const redirectUrl =
-        userRole === 'Admin' ? ROUTES.ADMIN.DASHBOARD : ROUTES.HOME
+        userRole === 'Admin' ? ROUTES.ADMIN.DASHBOARD : ROUTES.PUBLIC.HOME
       return NextResponse.redirect(new URL(redirectUrl, request.url))
     }
     return NextResponse.next()

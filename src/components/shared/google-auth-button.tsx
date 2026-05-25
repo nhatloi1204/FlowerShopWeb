@@ -36,7 +36,7 @@ export function GoogleAuthButton({ text }: GoogleAuthButtonProps) {
         storeLogin(loginData)
 
         setTimeout(() => {
-          router.push(ROUTES.HOME)
+          router.push(ROUTES.PUBLIC.HOME)
         }, 500)
       } catch (error) {
         console.error('Google login error:', error)

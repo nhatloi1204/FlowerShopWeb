@@ -1,6 +1,4 @@
 export const ROUTES = {
-  HOME: '/',
-
   AUTH: {
     LOGIN: '/login',
     SIGNUP: '/register',
@@ -23,7 +21,11 @@ export const ROUTES = {
   },
 
   PUBLIC: {
-    PRODUCTS: '/products',
+    HOME: '/',
+    SHOP: '/shop',
+    BLOG: '/blog',
+    ABOUT: '/about',
+    CONTACT: '/contact',
   },
 } as const
 
@@ -38,6 +40,14 @@ export const ADMIN_TITLES: Record<string, string> = {
   [ROUTES.ADMIN.PRODUCTS.INDEX]: 'Product management',
   [ROUTES.ADMIN.PRODUCTS.CREATE]: 'Create product',
   [ROUTES.ADMIN.PRODUCTS.EDIT]: 'Edit product',
+}
+
+export const PUBLIC_TITLES: Record<string, string> = {
+  [ROUTES.PUBLIC.HOME]: 'Home',
+  [ROUTES.PUBLIC.SHOP]: 'Shop',
+  [ROUTES.PUBLIC.BLOG]: 'Blog',
+  [ROUTES.PUBLIC.ABOUT]: 'About us',
+  [ROUTES.PUBLIC.CONTACT]: 'Contact us',
 }
 
 export const PATH_KEYS = {
