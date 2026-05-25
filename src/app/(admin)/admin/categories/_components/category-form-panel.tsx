@@ -27,12 +27,14 @@ import { toast } from 'sonner'
 
 interface CategoryFormPanelProps {
   activeCategory?: ProductCategoryOutput
-  onRefresh?: () => Promise<void>
+  variant?: 'card' | 'plain'
+  showCloseButton?: boolean
 }
 
 export function CategoryFormPanel({
   activeCategory,
-  onRefresh,
+  variant = 'card',
+  showCloseButton = true,
 }: CategoryFormPanelProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -70,107 +72,142 @@ export function CategoryFormPanel({
         form.reset({ name: '', description: '' })
       }
 
-      if (onRefresh) await onRefresh()
-    } catch (err) {
-      toast.error('Something went wrong. Please try again.')
+      router.refresh()
+      // eslint-disable-next-line
+    } catch (err: any) {
+      const errorMsg =
+        err?.response?.data?.message ||
+        'Something went wrong. Please try again.'
+      toast.error(errorMsg)
     } finally {
       setLoading(false)
     }
   }
 
   const handleCancel = () => {
-    form.reset({ name: '', description: '' })
-    router.push('/admin/categories')
+    router.replace('/admin/categories')
+  }
+
+  const titleText = isEditMode ? 'Update Category' : 'New Category'
+
+  const formContent = (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+        <FormField
+          control={form.control}
+          name='name'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category Name</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder='e.g. Wedding Flowers, Birthday...'
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='description'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder='Enter a brief description for this category...'
+                  className='min-h-24 resize-none'
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className='flex gap-2 pt-2'>
+          {isEditMode && (
+            <Button
+              type='button'
+              variant='outline'
+              onClick={handleCancel}
+              disabled={loading}
+              className='w-1/3'
+              aria-hidden={!isEditMode}
+              tabIndex={isEditMode ? 0 : -1}
+            >
+              Cancel
+            </Button>
+          )}
+          <Button type='submit' disabled={loading} className='flex-1'>
+            {loading ? (
+              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+            ) : isEditMode ? (
+              <Save className='mr-2 h-4 w-4' />
+            ) : (
+              <Plus className='mr-2 h-4 w-4' />
+            )}
+            {isEditMode ? 'Save Changes' : 'Add Category'}
+          </Button>
+        </div>
+      </form>
+    </Form>
+  )
+
+  if (variant === 'plain') {
+    return (
+      <div className='space-y-4'>
+        <div className='flex flex-row items-center justify-between space-y-0 pb-4'>
+          <div className='text-sm font-bold uppercase tracking-wider text-muted-foreground'>
+            {titleText}
+          </div>
+          {showCloseButton && (
+            <Button
+              type='button'
+              size='icon'
+              variant='ghost'
+              onClick={handleCancel}
+              className={
+                isEditMode ? 'size-8' : 'size-8 opacity-0 pointer-events-none'
+              }
+              aria-hidden={!isEditMode}
+              tabIndex={isEditMode ? 0 : -1}
+            >
+              <X className='size-4' />
+            </Button>
+          )}
+        </div>
+        {formContent}
+      </div>
+    )
   }
 
   return (
     <Card className='shadow-sm border-xl'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-4'>
         <CardTitle className='text-sm font-bold uppercase tracking-wider text-muted-foreground'>
-          {isEditMode ? 'Update Category' : 'New Category'}
+          {titleText}
         </CardTitle>
-        <Button
-          type='button'
-          size='icon'
-          variant='ghost'
-          onClick={handleCancel}
-          className={
-            isEditMode ? 'size-8' : 'size-8 opacity-0 pointer-events-none'
-          }
-          aria-hidden={!isEditMode}
-          tabIndex={isEditMode ? 0 : -1}
-        >
-          <X className='size-4' />
-        </Button>
+        {showCloseButton && (
+          <Button
+            type='button'
+            size='icon'
+            variant='ghost'
+            onClick={handleCancel}
+            className={
+              isEditMode ? 'size-8' : 'size-8 opacity-0 pointer-events-none'
+            }
+            aria-hidden={!isEditMode}
+            tabIndex={isEditMode ? 0 : -1}
+          >
+            <X className='size-4' />
+          </Button>
+        )}
       </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-            <FormField
-              control={form.control}
-              name='name'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='e.g. Wedding Flowers, Birthday...'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name='description'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder='Enter a brief description for this category...'
-                      className='min-h-24 resize-none'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className='flex gap-2 pt-2'>
-              <Button
-                type='button'
-                variant='outline'
-                onClick={handleCancel}
-                disabled={loading || !isEditMode}
-                className={
-                  isEditMode
-                    ? 'w-1/3'
-                    : 'hidden w-0 opacity-0 pointer-events-none'
-                }
-                aria-hidden={!isEditMode}
-                tabIndex={isEditMode ? 0 : -1}
-              >
-                Cancel
-              </Button>
-              <Button type='submit' disabled={loading} className='flex-1'>
-                {loading ? (
-                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                ) : isEditMode ? (
-                  <Save className='mr-2 h-4 w-4' />
-                ) : (
-                  <Plus className='mr-2 h-4 w-4' />
-                )}
-                {isEditMode ? 'Save Changes' : 'Add Category'}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
+      <CardContent>{formContent}</CardContent>
     </Card>
   )
 }

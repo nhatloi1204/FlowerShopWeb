@@ -20,13 +20,11 @@ import { toast } from 'sonner'
 interface CategoriesTableProps {
   data: ProductCategoryOutput[]
   currentEditingId?: number
-  onRefresh?: () => Promise<void>
 }
 
 export function CategoriesTable({
   data,
   currentEditingId,
-  onRefresh,
 }: CategoriesTableProps) {
   const router = useRouter()
   const [deleteId, setDeleteId] = useState<number | null>(null)
@@ -34,11 +32,11 @@ export function CategoriesTable({
   const handleEditToggle = useCallback(
     (id: number) => {
       if (currentEditingId === id) {
-        router.push('/admin/categories')
+        router.replace('/admin/categories')
         return
       }
 
-      router.push(`/admin/categories?editId=${id}`)
+      router.replace(`/admin/categories?editId=${id}`)
     },
     [currentEditingId, router],
   )
@@ -58,9 +56,9 @@ export function CategoriesTable({
       } else {
         toast.success('Category deleted successfully!')
         if (currentEditingId === deleteId) {
-          router.push('/admin/categories')
+          router.replace('/admin/categories')
         }
-        if (onRefresh) await onRefresh()
+        router.refresh()
       }
       // eslint-disable-next-line
     } catch (err: any) {
