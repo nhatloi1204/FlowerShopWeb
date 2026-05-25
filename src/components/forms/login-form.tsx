@@ -54,7 +54,7 @@ export function LoginForm({
       if (userType === 'Admin') {
         router.push(ROUTES.ADMIN.DASHBOARD)
       } else {
-        router.push(ROUTES.HOME)
+        router.push(ROUTES.PUBLIC.HOME)
       }
     } catch (error) {
       console.error('Login error:', error)

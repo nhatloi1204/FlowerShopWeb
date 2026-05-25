@@ -66,7 +66,7 @@ export function SignupForm({
         if (userType === 'Admin') {
           router.push(ROUTES.ADMIN.DASHBOARD)
         } else {
-          router.push(ROUTES.HOME)
+          router.push(ROUTES.PUBLIC.HOME)
         }
       }, 0)
     } catch (error) {
