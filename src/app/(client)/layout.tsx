@@ -1,5 +1,4 @@
 import Header from '@/components/shared/header'
-import Container from '@/components/container'
 // import Footer from '@/components/shared/footer'
 
 export default function ClientLayout({
@@ -11,9 +10,7 @@ export default function ClientLayout({
     <div className='theme-client min-h-screen bg-white flex flex-col antialiased'>
       <Header />
 
-      <main className='flex-1 bg-white'>
-        <Container className='py-8'>{children}</Container>
-      </main>
+      <main className='flex-1 bg-white'>{children}</main>
 
       {/* <Footer /> */}
     </div>
