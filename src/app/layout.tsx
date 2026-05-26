@@ -26,11 +26,7 @@ export default function RootLayout({
   const googleClientId: string = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!
 
   return (
-    <html
-      lang='en'
-      className={cn(inter.variable, 'font-sans', geist.variable)}
-      suppressHydrationWarning
-    >
+    <html lang='en' className={cn(inter.variable, 'font-sans', geist.variable)}>
       <body>
         <div className='min-h-full bg-background antialiased flex flex-col'>
           <GoogleOAuthProvider clientId={googleClientId}>
