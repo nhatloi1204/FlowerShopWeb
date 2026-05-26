@@ -182,7 +182,7 @@ const CarouselPrevious = React.forwardRef<
       data-slot='carousel-prev'
       type='button'
       className={cn(
-        'absolute z-10 text-black hover:text-primary transition-colors duration-300 disabled:opacity-30 disabled:pointer-events-none cursor-pointer p-1 select-none',
+        'absolute z-10 hidden lg:flex items-center justify-center text-black hover:text-primary transition-colors duration-300 disabled:opacity-30 disabled:pointer-events-none cursor-pointer p-1 select-none',
         orientation === 'horizontal'
           ? 'top-1/2 left-4 -translate-y-1/2'
           : '-top-12 left-1/2 -translate-x-1/2 rotate-90',
@@ -211,7 +211,7 @@ const CarouselNext = React.forwardRef<
       data-slot='carousel-next'
       type='button'
       className={cn(
-        'absolute z-10 text-black hover:text-primary transition-colors duration-300 disabled:opacity-30 disabled:pointer-events-none cursor-pointer p-1 select-none',
+        'absolute z-10 hidden md:flex items-center justify-center text-black hover:text-primary transition-colors duration-300 disabled:opacity-30 disabled:pointer-events-none cursor-pointer p-1 select-none',
         orientation === 'horizontal'
           ? 'top-1/2 right-4 -translate-y-1/2'
           : '-bottom-12 left-1/2 -translate-x-1/2 rotate-90',

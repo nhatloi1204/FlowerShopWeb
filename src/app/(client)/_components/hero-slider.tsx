@@ -11,6 +11,7 @@ import {
   type CarouselApi,
 } from '@/components/ui/carousel'
 import { cn } from '@/lib/utils'
+import Container from '@/components/container'
 
 const mockBannerData = [
   {
@@ -68,55 +69,54 @@ export default function HeroSlider() {
                   backgroundPosition: 'center',
                 }}
               >
-                <div className='absolute inset-0 bg-black/5' />
-
-                <div className='absolute inset-0 flex flex-col justify-center px-8 md:px-16 lg:px-24 max-w-4xl z-10'>
-                  <h2
-                    className={cn(
-                      'text-2xl md:text-5xl lg:text-6xl font-black text-neutral-900 tracking-tight transition-all duration-700 ease-out transform delay-100',
-                      isActive
-                        ? 'opacity-100 translate-x-0'
-                        : 'opacity-0 -translate-x-16',
-                    )}
-                  >
-                    {banner.title}
-                  </h2>
-
-                  <p
-                    className={cn(
-                      'mt-3 text-sm md:text-lg text-neutral-700 font-medium transition-all duration-700 ease-out transform delay-300',
-                      isActive
-                        ? 'opacity-100 translate-x-0'
-                        : 'opacity-0 -translate-x-12',
-                    )}
-                  >
-                    {banner.subtitle}
-                  </p>
-
-                  <div
-                    className={cn(
-                      'mt-8 transition-all duration-700 ease-out transform delay-500',
-                      isActive
-                        ? 'opacity-100 translate-x-0'
-                        : 'opacity-0 -translate-x-8',
-                    )}
-                  >
-                    <Link
-                      href={banner.link}
-                      className='inline-block bg-primary hover:bg-primary/90 text-white font-bold text-xs md:text-sm tracking-wider uppercase py-3 px-8 rounded-full shadow-lg transition-transform active:scale-95'
+                <Container className='h-full flex flex-col justify-center'>
+                  <div className='max-w-xl md:max-w-2xl text-left'>
+                    <h2
+                      className={cn(
+                        'text-2xl md:text-5xl lg:text-6xl font-black text-neutral-900 tracking-tight transition-all duration-700 ease-out transform delay-100',
+                        isActive
+                          ? 'opacity-100 translate-x-0'
+                          : 'opacity-0 -translate-x-16',
+                      )}
                     >
-                      {banner.buttonText}
-                    </Link>
+                      {banner.title}
+                    </h2>
+
+                    <p
+                      className={cn(
+                        'mt-3 text-sm md:text-lg text-neutral-700 font-medium transition-all duration-700 ease-out transform delay-300',
+                        isActive
+                          ? 'opacity-100 translate-x-0'
+                          : 'opacity-0 -translate-x-12',
+                      )}
+                    >
+                      {banner.subtitle}
+                    </p>
+
+                    <div
+                      className={cn(
+                        'mt-8 transition-all duration-700 ease-out transform delay-500',
+                        isActive
+                          ? 'opacity-100 translate-x-0'
+                          : 'opacity-0 -translate-x-8',
+                      )}
+                    >
+                      <Link
+                        href={banner.link}
+                        className='inline-block bg-primary hover:bg-primary/90 text-white font-bold text-xs md:text-sm tracking-wider uppercase py-3 px-8 rounded-full shadow-lg transition-transform active:scale-95'
+                      >
+                        {banner.buttonText}
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                </Container>
               </CarouselItem>
             )
           })}
         </CarouselContent>
 
-        <CarouselPrevious />
-
-        <CarouselNext />
+        <CarouselPrevious className='md:opacity-0 md:group-hover:opacity-100 transition-all duration-300' />
+        <CarouselNext className='md:opacity-0 md:group-hover:opacity-100 transition-all duration-300' />
       </Carousel>
     </div>
   )
