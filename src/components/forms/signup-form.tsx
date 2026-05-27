@@ -22,7 +22,7 @@ import Image from 'next/image'
 
 import { authService } from '@/services'
 import { RegisterRequest, RegisterRequestSchema } from '@/validations'
-import { useAuthStore } from '@/store/useAuthStore'
+import { useAuthStore } from '@/stores/useAuthStore'
 import { ROUTES } from '@/constants/routes.constant'
 import { GoogleAuthButton } from '../shared/google-auth-button'
 import { Spinner } from '../ui/spinner'
