@@ -70,7 +70,7 @@ export default function SearchBar({
         void executeSearch(searchValue.trim(), selectedCategory?.id)
       }}
     >
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger className='text-xs font-bold text-neutral-500 flex items-center gap-1.5 whitespace-nowrap outline-none cursor-pointer hover:text-neutral-900 h-full select-none'>
           {selectedCategoryLabel}{' '}
           <ChevronDown className='w-3.5 h-3.5 text-neutral-400' />

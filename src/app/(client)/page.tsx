@@ -1,3 +1,4 @@
+import BlogSection from './_components/blog-section'
 import FeatureSection from './_components/feature-section'
 import FeaturedCategorySections from './_components/featured-category-sections'
 import HeroSlider from './_components/hero-slider'
@@ -10,6 +11,7 @@ export default function Home() {
       <PolicySection />
       <FeatureSection />
       <FeaturedCategorySections />
+      <BlogSection />
     </>
   )
 }

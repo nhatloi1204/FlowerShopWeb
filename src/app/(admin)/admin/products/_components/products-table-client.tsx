@@ -244,7 +244,7 @@ export function ProductsTableClient() {
 
   return (
     <>
-      <div className='flex flex-wrap items-center gap-3'>
+      <div className='flex flex-wrap items-center gap-3 '>
         <Input
           value={search}
           onChange={event => {
