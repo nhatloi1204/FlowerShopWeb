@@ -15,7 +15,7 @@ export default async function Header() {
   }
 
   return (
-    <header className='w-full flex flex-col sticky top-0 z-50 shadow-xs bg-white'>
+    <>
       <div className='hidden md:block w-full bg-neutral-900'>
         <Container>
           <Topbar />
@@ -28,15 +28,15 @@ export default async function Header() {
         </Container>
       </div>
 
-      <div className='hidden md:block w-full bg-white border-b border-neutral-100'>
+      <div className='hidden md:block w-full bg-white border-b border-neutral-100 sticky top-0 z-50 shadow-[0_2px_10px_rgba(0,0,0,0.02)] transition-shadow duration-300'>
         <Container>
           <Navbar categories={globalCategories} />
         </Container>
       </div>
 
-      <div className='block md:hidden w-full bg-white'>
+      <div className='block md:hidden w-full bg-white border-b border-neutral-100 sticky top-0 z-50 shadow-xs'>
         <MobileHeader categories={globalCategories} />
       </div>
-    </header>
+    </>
   )
 }

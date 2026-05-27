@@ -8,7 +8,7 @@ import { Spinner } from '@/components/ui/spinner'
 
 import { Button } from '@/components/ui/button'
 import { authService } from '@/services'
-import { useAuthStore } from '@/store/useAuthStore'
+import { useAuthStore } from '@/stores/useAuthStore'
 import { ROUTES } from '@/constants/routes.constant'
 
 interface GoogleAuthButtonProps {
