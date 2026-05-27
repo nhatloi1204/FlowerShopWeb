@@ -19,7 +19,7 @@ export default function Navbar({
     <div className='hidden md:flex w-full bg-white text-neutral-900 border-b border-neutral-100 shrink-0'>
       <div className='max-w-7xl mx-auto w-full py-5  flex justify-between items-center'>
         <div className='flex items-center gap-10'>
-          <DropdownMenu>
+          <DropdownMenu modal={false}>
             <DropdownMenuTrigger className='flex items-center gap-2.5 font-extrabold text-xs tracking-widest cursor-pointer outline-none hover:text-primary transition-colors py-1 shrink-0 select-none'>
               <Menu className='w-4 h-4 text-neutral-700' /> CATEGORIES{' '}
               <ChevronDown className='w-3.5 h-3.5 text-neutral-400' />

@@ -57,7 +57,7 @@ export default function CategoryTabSection({
         className='w-full text-center'
       >
         <div className='flex justify-center'>
-          <TabsList className='bg-transparent border-b border-neutral-200 flex justify-center w-fit rounded-none h-auto pb-0 mb-10 gap-8 p-0 data-[slot=tabs-list]:bg-transparent '>
+          <TabsList className='w-full bg-transparent border-b border-neutral-200 flex justify-start overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-none md:justify-center md:w-fit rounded-none h-auto pb-0 mb-10 gap-8 p-0 data-[slot=tabs-list]:bg-transparent '>
             {tabs.map(tab => (
               <TabsTrigger
                 key={tab.id}

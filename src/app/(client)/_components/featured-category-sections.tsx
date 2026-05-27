@@ -6,7 +6,7 @@ export default function FeaturedCategorySections() {
   const sections = MOCK_HOMEPAGE_SECTIONS
 
   return (
-    <Container className='my-16'>
+    <Container className='mt-16'>
       {sections.map(section => (
         <CategoryTabSection
           key={section.parentId}

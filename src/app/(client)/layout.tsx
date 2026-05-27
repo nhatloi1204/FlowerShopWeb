@@ -1,5 +1,5 @@
 import Header from '@/components/shared/header'
-// import Footer from '@/components/shared/footer'
+import Footer from '@/components/shared/footer/footer'
 
 export default function ClientLayout({
   children,
@@ -12,7 +12,7 @@ export default function ClientLayout({
 
       <main className='flex-1 bg-white'>{children}</main>
 
-      {/* <Footer /> */}
+      <Footer />
     </div>
   )
 }

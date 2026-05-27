@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware' // 🎯 Import middleware này
+import { persist } from 'zustand/middleware'
 
 export interface CartItem {
   id: number
