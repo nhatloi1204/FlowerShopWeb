@@ -66,6 +66,7 @@ export default function BlogSection() {
                           alt={post.title}
                           width={600}
                           height={375}
+                          unoptimized
                           sizes='(max-w-7xl) 33vw, 100vw'
                           className='object-cover transition-transform duration-700 group-hover:scale-105'
                         />

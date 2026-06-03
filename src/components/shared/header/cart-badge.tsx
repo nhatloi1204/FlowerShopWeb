@@ -15,6 +15,7 @@ import {
   SheetClose,
 } from '@/components/ui/sheet'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { formatPrice } from '@/utils/format-price.util'
 
 export default function CartBadge() {
   const {
@@ -100,6 +101,7 @@ export default function CartBadge() {
                         src={item.imageUrl}
                         alt={item.name}
                         fill
+                        unoptimized
                         className='object-cover'
                         sizes='80px'
                       />
@@ -139,7 +141,7 @@ export default function CartBadge() {
 
                         <div className='flex items-center gap-3'>
                           <span className='text-sm font-bold text-primary'>
-                            £{(item.price * item.quantity).toFixed(2)}
+                            {formatPrice(item.price * item.quantity)}
                           </span>
                           <button
                             onClick={() => removeFromCart(item.id)}
@@ -165,7 +167,7 @@ export default function CartBadge() {
                 Subtotal:
               </span>
               <span className='text-lg font-bold text-primary'>
-                £{totalPrice.toFixed(2)}
+                {formatPrice(totalPrice)}
               </span>
             </div>
             <div className='grid grid-cols-2 gap-3 mt-1'>
