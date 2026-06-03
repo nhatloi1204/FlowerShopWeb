@@ -24,9 +24,15 @@ const ALL_ROUTE_LABELS: Record<string, string> = {
 
 interface DynamicBreadcrumbProps {
   customTitle?: string
+  className?: string
+  header?: string
 }
 
-export function DynamicBreadcrumb({ customTitle }: DynamicBreadcrumbProps) {
+export function DynamicBreadcrumb({
+  customTitle,
+  className,
+  header,
+}: DynamicBreadcrumbProps) {
   const pathname = usePathname()
   const isAdminRoute = pathname.startsWith('/admin')
 
@@ -49,66 +55,73 @@ export function DynamicBreadcrumb({ customTitle }: DynamicBreadcrumbProps) {
   if (segments.length === 0) return null
 
   return (
-    <Breadcrumb>
-      <BreadcrumbList>
-        <BreadcrumbItem className='uppercase tracking-wider text-xs font-semibold'>
-          {isAdminRoute ? (
-            segments.length === 0 ? (
-              <BreadcrumbPage>Admin</BreadcrumbPage>
+    <>
+      <Breadcrumb className={className}>
+        {header && (
+          <h1 className='text-3xl md:text-4xl font-serif text-neutral-800 mb-2.5 capitalize tracking-wide'>
+            {header}
+          </h1>
+        )}
+        <BreadcrumbList>
+          <BreadcrumbItem className='uppercase tracking-wider text-xs font-semibold'>
+            {isAdminRoute ? (
+              segments.length === 0 ? (
+                <BreadcrumbPage>Admin</BreadcrumbPage>
+              ) : (
+                <BreadcrumbLink asChild>
+                  <Link href={ROUTES.ADMIN.DASHBOARD}>Admin</Link>
+                </BreadcrumbLink>
+              )
             ) : (
               <BreadcrumbLink asChild>
-                <Link href={ROUTES.ADMIN.DASHBOARD}>Admin</Link>
+                <Link href='/'>Home</Link>
               </BreadcrumbLink>
+            )}
+          </BreadcrumbItem>
+
+          {segments.length > 0 && <BreadcrumbSeparator />}
+
+          {segments.map((_, index) => {
+            const isActualLast = index === segments.length - 1
+
+            const accumulatedPath = isAdminRoute
+              ? '/admin/' + segments.slice(0, index + 1).join('/')
+              : '/' + segments.slice(0, index + 1).join('/')
+
+            let displayTitle = ALL_ROUTE_LABELS[accumulatedPath]
+
+            if (!isAdminRoute && isActualLast && customTitle) {
+              displayTitle = customTitle
+            }
+
+            if (!displayTitle) {
+              const currentSegment = segments[index]
+              displayTitle =
+                currentSegment.charAt(0).toUpperCase() +
+                currentSegment.slice(1).replace(/-/g, ' ')
+            }
+
+            const shouldBeStaticPage =
+              isActualLast ||
+              (isAdminRoute && hasAdminIdParam && index === segments.length - 1)
+
+            return (
+              <React.Fragment key={accumulatedPath}>
+                <BreadcrumbItem className='uppercase tracking-wider text-xs font-semibold'>
+                  {shouldBeStaticPage ? (
+                    <BreadcrumbPage>{displayTitle}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink asChild>
+                      <Link href={accumulatedPath}>{displayTitle}</Link>
+                    </BreadcrumbLink>
+                  )}
+                </BreadcrumbItem>
+                {!isActualLast && <BreadcrumbSeparator />}
+              </React.Fragment>
             )
-          ) : (
-            <BreadcrumbLink asChild>
-              <Link href='/'>Home</Link>
-            </BreadcrumbLink>
-          )}
-        </BreadcrumbItem>
-
-        {segments.length > 0 && <BreadcrumbSeparator />}
-
-        {segments.map((_, index) => {
-          const isActualLast = index === segments.length - 1
-
-          const accumulatedPath = isAdminRoute
-            ? '/admin/' + segments.slice(0, index + 1).join('/')
-            : '/' + segments.slice(0, index + 1).join('/')
-
-          let displayTitle = ALL_ROUTE_LABELS[accumulatedPath]
-
-          if (!isAdminRoute && isActualLast && customTitle) {
-            displayTitle = customTitle
-          }
-
-          if (!displayTitle) {
-            const currentSegment = segments[index]
-            displayTitle =
-              currentSegment.charAt(0).toUpperCase() +
-              currentSegment.slice(1).replace(/-/g, ' ')
-          }
-
-          const shouldBeStaticPage =
-            isActualLast ||
-            (isAdminRoute && hasAdminIdParam && index === segments.length - 1)
-
-          return (
-            <React.Fragment key={accumulatedPath}>
-              <BreadcrumbItem className='uppercase tracking-wider text-xs font-semibold'>
-                {shouldBeStaticPage ? (
-                  <BreadcrumbPage>{displayTitle}</BreadcrumbPage>
-                ) : (
-                  <BreadcrumbLink asChild>
-                    <Link href={accumulatedPath}>{displayTitle}</Link>
-                  </BreadcrumbLink>
-                )}
-              </BreadcrumbItem>
-              {!isActualLast && <BreadcrumbSeparator />}
-            </React.Fragment>
-          )
-        })}
-      </BreadcrumbList>
-    </Breadcrumb>
+          })}
+        </BreadcrumbList>
+      </Breadcrumb>
+    </>
   )
 }

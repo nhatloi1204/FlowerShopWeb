@@ -21,20 +21,7 @@ import { Plus } from 'lucide-react'
 import { ConfirmDeleteDialog } from '@/components/shared/confirm-delete-dialog'
 import { ROUTES } from '@/constants/routes.constant'
 import { productCategoryService } from '@/services'
-
-const formatPrice = (product: ProductOutput) => {
-  if (product.price != null) {
-    return `${product.price.toLocaleString('en-US')} VND`
-  }
-
-  if (product.priceMin != null || product.priceMax != null) {
-    const min = product.priceMin ?? 0
-    const max = product.priceMax ?? 0
-    return `${min.toLocaleString('en-US')} - ${max.toLocaleString('en-US')} VND`
-  }
-
-  return '--'
-}
+import { formatPrice } from '@/utils/format-price.util'
 
 const getErrorMessage = (error: unknown) => {
   if (error instanceof Error) {
@@ -79,7 +66,6 @@ export function ProductsTableClient() {
     pageIndex: 0,
     pageSize: 10,
   })
-  const [rowSelection, setRowSelection] = useState({})
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | 'all'>(
     'all',
   )
@@ -121,7 +107,6 @@ export function ProductsTableClient() {
         },
       })
       setPagedData(data)
-      setRowSelection({})
     } catch (error) {
       setError(getErrorMessage(error))
     } finally {
@@ -142,30 +127,14 @@ export function ProductsTableClient() {
   const columns = useMemo<ColumnDef<ProductOutput>[]>(
     () => [
       {
-        id: 'select',
-        size: 50,
-        header: ({ table }) => (
-          <input
-            type='checkbox'
-            className='size-4 rounded border'
-            checked={table.getIsAllPageRowsSelected()}
-            onChange={event =>
-              table.toggleAllPageRowsSelected(event.target.checked)
-            }
-            aria-label='Select all'
-          />
-        ),
+        id: 'id',
+        header: 'ID',
+        size: 70,
         cell: ({ row }) => (
-          <input
-            type='checkbox'
-            className='size-4 rounded border'
-            checked={row.getIsSelected()}
-            onChange={event => row.toggleSelected(event.target.checked)}
-            aria-label='Select row'
-          />
+          <span className='font-semibold text-neutral-600 dark:text-neutral-400'>
+            #{row.original.id}
+          </span>
         ),
-        enableSorting: false,
-        enableHiding: false,
       },
       {
         accessorKey: 'name',
@@ -233,10 +202,8 @@ export function ProductsTableClient() {
   const table = useReactTable({
     data: pagedData.items,
     columns,
-    state: { pagination, rowSelection },
+    state: { pagination },
     onPaginationChange: handlePaginationChange,
-    onRowSelectionChange: setRowSelection,
-    enableRowSelection: true,
     manualPagination: true,
     pageCount: pagedData.totalPages,
     getCoreRowModel: getCoreRowModel(),
@@ -294,10 +261,7 @@ export function ProductsTableClient() {
         </Button>
       </div>
 
-      <div className='flex flex-wrap items-center gap-3 text-sm text-muted-foreground'>
-        Selected {table.getSelectedRowModel().rows.length} of{' '}
-        {pagedData.totalItems}
-        <span aria-hidden='true'>•</span>
+      <div className='text-sm text-muted-foreground mt-2 font-medium'>
         Total {pagedData.totalItems} items
       </div>
 

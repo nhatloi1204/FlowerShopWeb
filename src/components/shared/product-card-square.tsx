@@ -7,6 +7,7 @@ import { ShoppingBag, Heart, Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useCartStore } from '@/stores/useCartStore'
 import { useWishlistStore } from '@/stores/useWishlistStore'
+import { formatPrice } from '@/utils/format-price.util'
 
 interface ProductCardSquareProps {
   product: {
@@ -57,6 +58,7 @@ export default function ProductCardSquare({ product }: ProductCardSquareProps) {
           src={product.imageUrl}
           alt={product.name}
           fill
+          unoptimized
           sizes='(max-w-7xl) 25vw, 50vw'
           className='object-cover transition-transform duration-500 group-hover:scale-105'
         />
@@ -127,11 +129,11 @@ export default function ProductCardSquare({ product }: ProductCardSquareProps) {
         </Link>
         <div className='flex items-center gap-2 mt-0.5'>
           <span className='text-primary font-bold text-sm'>
-            £{product.price.toFixed(2)}
+            {formatPrice(product.price)}
           </span>
           {product.originalPrice && (
             <span className='text-neutral-400 line-through text-xs'>
-              £{product.originalPrice.toFixed(2)}
+              {formatPrice(product.originalPrice)}
             </span>
           )}
         </div>
